@@ -12,10 +12,12 @@ struct PlayerView: View {
                 RoundedRectangle(cornerRadius: 18)
                     .fill(.white.opacity(0.10))
                     .frame(height: 240)
-                    .overlay VStack(spacing: 10) {
-                        Image(systemName: "play.circle").font(.system(size: 54))
-                        Text("Add an authorized media URL to enable playback")
-                            .font(.caption).foregroundStyle(.secondary)
+                    .overlay {
+                        VStack(spacing: 10) {
+                            Image(systemName: "play.circle").font(.system(size: 54))
+                            Text("Add an authorized media URL to enable playback")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
                     }
             }
             Text(item.title).font(.title2.bold())
