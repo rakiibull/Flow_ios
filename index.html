@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101010">
+<title>Flow Tube</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
+header{padding:18px;font-size:24px;font-weight:bold;display:flex;justify-content:space-between}
+header span{color:#ff4545}
+.search{margin:0 15px 18px;padding:13px;background:#252525;border-radius:12px;color:#aaa}
+.categories{display:flex;gap:10px;padding:0 15px 18px;overflow:auto}
+.categories button{background:#292929;color:white;border:0;padding:10px 17px;border-radius:20px;white-space:nowrap}
+.categories button:first-child{background:white;color:black}
+h3{padding:0 15px}
+.video{margin:15px;background:#202020;border-radius:14px;overflow:hidden}
+.thumbnail{height:190px;background:linear-gradient(135deg,#333,#111);display:flex;align-items:center;justify-content:center;font-size:45px}
+.details{padding:13px}
+.details p{color:#aaa;font-size:13px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#191919;display:flex;justify-content:space-around;padding:15px 5px}
+nav button{background:none;border:0;color:white;font-size:12px}
+main{padding-bottom:75px}
+</style>
+</head>
+<body>
+<header><span>FLOW</span> TUBE <span>⌕</span></header>
+<div class="search">⌕ Search videos...</div>
+<div class="categories">
+<button>All</button><button>Music</button><button>Gaming</button>
+<button>Technology</button><button>News</button>
+</div>
+<main>
+<h3>Discover</h3>
+<div class="video">
+<div class="thumbnail">▶</div>
+<div class="details">
+<strong>Welcome to Flow Tube</strong>
+<p>Flow Tube · Video platform</p>
+</div>
+</div>
+<div class="video">
+<div class="thumbnail">▶</div>
+<div class="details">
+<strong>Explore your favourite videos</strong>
+<p>Flow Tube · Discover</p>
+</div>
+</div>
+</main>
+<nav>
+<button>⌂<br>Home</button>
+<button>⌕<br>Search</button>
+<button>＋<br>Library</button>
+<button>◉<br>Profile</button>
+</nav>
+</body>
+</html>
