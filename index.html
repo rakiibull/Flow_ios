@@ -1,58 +1,121 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101010">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flow Tube</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
-header{padding:18px;font-size:24px;font-weight:bold;display:flex;justify-content:space-between}
-header span{color:#ff4545}
-.search{margin:0 15px 18px;padding:13px;background:#252525;border-radius:12px;color:#aaa}
-.categories{display:flex;gap:10px;padding:0 15px 18px;overflow:auto}
-.categories button{background:#292929;color:white;border:0;padding:10px 17px;border-radius:20px;white-space:nowrap}
-.categories button:first-child{background:white;color:black}
-h3{padding:0 15px}
-.video{margin:15px;background:#202020;border-radius:14px;overflow:hidden}
-.thumbnail{height:190px;background:linear-gradient(135deg,#333,#111);display:flex;align-items:center;justify-content:center;font-size:45px}
-.details{padding:13px}
-.details p{color:#aaa;font-size:13px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#191919;display:flex;justify-content:space-around;padding:15px 5px}
-nav button{background:none;border:0;color:white;font-size:12px}
-main{padding-bottom:75px}
+body{margin:0;background:#101114;color:white;font-family:Arial,sans-serif}
+header{padding:20px;font-size:25px;font-weight:bold;color:#ff4242}
+main{padding:16px;max-width:850px;margin:auto}
+.search{display:flex;gap:8px}
+input{flex:1;min-width:0;padding:14px;border-radius:12px;border:1px solid #333;background:#222;color:white;font-size:16px}
+button{border:0;border-radius:10px;padding:12px 16px;background:#ff3838;color:white;font-weight:bold}
+.categories{display:flex;gap:8px;overflow:auto;margin:18px 0}
+.categories button{white-space:nowrap;background:#292a30}
+#player{margin:18px 0}
+iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:14px}
+#results{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.video{background:#202126;border-radius:13px;overflow:hidden;cursor:pointer}
+.video img{width:100%;display:block}
+.video h3{font-size:15px;line-height:1.4;padding:0 12px}
+.video p{font-size:12px;color:#aaa;padding:0 12px}
+#status{color:#bbb;margin:16px 0}
+nav{position:sticky;bottom:0;background:#191a1f;padding:15px;text-align:center;color:#bbb}
 </style>
 </head>
 <body>
-<header><span>FLOW</span> TUBE <span>⌕</span></header>
-<div class="search">⌕ Search videos...</div>
-<div class="categories">
-<button>All</button><button>Music</button><button>Gaming</button>
-<button>Technology</button><button>News</button>
-</div>
+<header>▶ FLOW TUBE</header>
 <main>
-<h3>Discover</h3>
-<div class="video">
-<div class="thumbnail">▶</div>
-<div class="details">
-<strong>Welcome to Flow Tube</strong>
-<p>Flow Tube · Video platform</p>
+<div class="search">
+<input id="query" placeholder="Search YouTube videos...">
+<button onclick="searchVideos()">Search</button>
 </div>
+
+<div class="categories">
+<button onclick="searchCategory('Trending')">Trending</button>
+<button onclick="searchCategory('Music')">Music</button>
+<button onclick="searchCategory('Gaming')">Gaming</button>
+<button onclick="searchCategory('News')">News</button>
+<button onclick="searchCategory('Movies')">Movies</button>
 </div>
-<div class="video">
-<div class="thumbnail">▶</div>
-<div class="details">
-<strong>Explore your favourite videos</strong>
-<p>Flow Tube · Discover</p>
-</div>
-</div>
+
+<div id="status">Search for videos to get started.</div>
+<div id="player"></div>
+<div id="results"></div>
 </main>
-<nav>
-<button>⌂<br>Home</button>
-<button>⌕<br>Search</button>
-<button>＋<br>Library</button>
-<button>◉<br>Profile</button>
-</nav>
+<nav>Home　　Search　　Library　　Settings</nav>
+
+<script>
+const API_KEY = "YOUR_API_KEY_HERE";
+
+async function searchVideos(){
+ const q=document.getElementById("query").value.trim();
+ if(!q){document.getElementById("status").textContent="Enter a video name first.";return;}
+ await loadVideos(q);
+}
+
+function searchCategory(q){
+ document.getElementById("query").value=q;
+ loadVideos(q);
+}
+
+async function loadVideos(q){
+ const status=document.getElementById("status");
+ const results=document.getElementById("results");
+ results.innerHTML="";
+ document.getElementById("player").innerHTML="";
+ status.textContent="Searching videos...";
+
+ if(API_KEY==="YOUR_API_KEY_HERE"){
+ status.textContent="Please add your YouTube API key in the code.";
+ return;
+ }
+
+ try{
+ const url="https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q="+encodeURIComponent(q)+"&key="+encodeURIComponent(API_KEY);
+ const response=await fetch(url);
+ const data=await response.json();
+
+ if(!response.ok) throw new Error(data.error?.message||"API request failed");
+
+ if(!data.items?.length){
+ status.textContent="No videos found.";
+ return;
+ }
+
+ status.textContent=data.items.length+" videos found";
+
+ data.items.forEach(item=>{
+ const id=item.id.videoId;
+ const title=item.snippet.title;
+ const channel=item.snippet.channelTitle;
+ const thumb=item.snippet.thumbnails.medium.url;
+
+ const card=document.createElement("div");
+ card.className="video";
+ card.innerHTML=`<img src="${thumb}" alt=""><h3></h3><p></p>`;
+ card.querySelector("h3").textContent=title;
+ card.querySelector("p").textContent=channel;
+ card.onclick=()=>playVideo(id);
+ results.appendChild(card);
+ });
+ }catch(error){
+ status.textContent="Error: "+error.message;
+ }
+}
+
+function playVideo(id){
+ document.getElementById("player").innerHTML=
+ `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+document.getElementById("query").addEventListener("keydown",e=>{
+ if(e.key==="Enter")searchVideos();
+});
+</script>
 </body>
 </html>
