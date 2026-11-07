@@ -1,0 +1,31 @@
+[1mdiff --git a/LibraryStore.swift b/LibraryStore.swift[m
+[1mindex 56ae81a..14cb612 100644[m
+[1m--- a/LibraryStore.swift[m
+[1m+++ b/LibraryStore.swift[m
+[36m@@ -1,4 +1,5 @@[m
+ import Foundation[m
+[32m+[m[32mimport Combine[m
+ [m
+ @MainActor[m
+ final class LibraryStore: ObservableObject {[m
+[1mdiff --git a/PlayerView.swift b/PlayerView.swift[m
+[1mindex 1398ae0..a78ddaf 100644[m
+[1m--- a/PlayerView.swift[m
+[1m+++ b/PlayerView.swift[m
+[36m@@ -12,10 +12,12 @@[m [mstruct PlayerView: View {[m
+                 RoundedRectangle(cornerRadius: 18)[m
+                     .fill(.white.opacity(0.10))[m
+                     .frame(height: 240)[m
+[31m-                    .overlay VStack(spacing: 10) {[m
+[31m-                        Image(systemName: "play.circle").font(.system(size: 54))[m
+[31m-                        Text("Add an authorized media URL to enable playback")[m
+[31m-                            .font(.caption).foregroundStyle(.secondary)[m
+[32m+[m[32m                    .overlay {[m
+[32m+[m[32m                        VStack(spacing: 10) {[m
+[32m+[m[32m                            Image(systemName: "play.circle").font(.system(size: 54))[m
+[32m+[m[32m                            Text("Add an authorized media URL to enable playback")[m
+[32m+[m[32m                                .font(.caption).foregroundStyle(.secondary)[m
+[32m+[m[32m                        }[m
+                     }[m
+             }[m
+             Text(item.title).font(.title2.bold())[m
