@@ -1,0 +1,21 @@
+name: FlowiOS
+options:
+  bundleIdPrefix: org.flowtube
+  deploymentTarget:
+    iOS: "17.0"
+targets:
+  FlowiOS:
+    type: application
+    platform: iOS
+    sources:
+      - Sources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.flowtube.flow.ios
+        PRODUCT_NAME: Flow
+        SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_KEY_CFBundleDisplayName: Flow
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
