@@ -8,7 +8,7 @@ on:
       - '.github/workflows/flow-main-ios.yml'
 
 jobs:
-  build-simulator:
+  build-ios:
     runs-on: macos-15-intel
     steps:
       - name: Checkout
@@ -22,10 +22,26 @@ jobs:
         run: xcodegen generate
       - name: Build iOS Simulator app
         working-directory: Flow-main/ios
-        run: xcodebuild -project FlowiOS.xcodeproj -scheme FlowiOS -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/DerivedData CODE_SIGNING_ALLOWED=NO build
+        run: xcodebuild -project FlowiOS.xcodeproj -scheme FlowiOS -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/Simulator CODE_SIGNING_ALLOWED=NO build
+      - name: Build unsigned iPhone app
+        working-directory: Flow-main/ios
+        run: xcodebuild -project FlowiOS.xcodeproj -scheme FlowiOS -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build/Device CODE_SIGNING_ALLOWED=NO build
+      - name: Package unsigned IPA for AltStore
+        working-directory: Flow-main/ios
+        run: |
+          mkdir -p build/ipa/Payload
+          cp -R build/Device/Build/Products/Debug-iphoneos/Flow.app build/ipa/Payload/Flow.app
+          cd build/ipa
+          /usr/bin/zip -qry ../../Flow-unsigned.ipa Payload
       - name: Upload Simulator app artifact
         uses: actions/upload-artifact@v4
         with:
           name: Flow-main-iOS-Simulator-only
-          path: Flow-main/ios/build/DerivedData/Build/Products/Debug-iphonesimulator/Flow.app
+          path: Flow-main/ios/build/Simulator/Build/Products/Debug-iphonesimulator/Flow.app
+          if-no-files-found: error
+      - name: Upload unsigned iPhone IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flow-main-iOS-Unsigned-IPA-for-AltStore
+          path: Flow-main/ios/Flow-unsigned.ipa
           if-no-files-found: error
