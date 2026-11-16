@@ -1,81 +1,31 @@
 name: Build Flow-main iOS Prototype
 
 on:
-
   workflow_dispatch:
-  
   push:
-  
     paths:
-    
-      - "Flow-main/ios/**"
-      
-      - ".github/workflows/flow-main-ios.yml"
-      
+      - 'Flow-main/ios/**'
+      - '.github/workflows/flow-main-ios.yml'
+
 jobs:
-
   build-simulator:
-  
-    runs-on: macos-15
-    
+    runs-on: macos-15-intel
     steps:
-    
       - name: Checkout
-      
         uses: actions/checkout@v4
-        
       - name: Install XcodeGen
-      
         run: brew install xcodegen
-        
       - name: Extract Flow iOS sources
-      
         run: unzip -o Flow-main/ios/Flow-main-ios-source.zip -d Flow-main/ios
-        
       - name: Generate Xcode project
-      
         working-directory: Flow-main/ios
-        
         run: xcodegen generate
-        
       - name: Build iOS Simulator app
-      
         working-directory: Flow-main/ios
-        
         run: xcodebuild -project FlowiOS.xcodeproj -scheme FlowiOS -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/DerivedData CODE_SIGNING_ALLOWED=NO build
-        
       - name: Upload Simulator app artifact
-      
         uses: actions/upload-artifact@v4
-        
         with:
-        
           name: Flow-main-iOS-Simulator-only
-          
           path: Flow-main/ios/build/DerivedData/Build/Products/Debug-iphonesimulator/Flow.app
-          
           if-no-files-found: error
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
